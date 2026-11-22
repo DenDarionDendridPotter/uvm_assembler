@@ -1,0 +1,6 @@
+[
+  {"op": "load_const", "constant": 847, "comment": "тест A=30, B=847"},
+  {"op": "read", "offset": 846, "comment": "тест A=29, B=846"},
+  {"op": "write", "address": 697, "comment": "тест A=28, B=697"},
+  {"op": "sgn", "comment": "тест A=3"}
+]
