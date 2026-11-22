@@ -1,13 +1,16 @@
-"""Ассемблер УВМ: перевод программы с языка ассемблера (JSON)."""
+"""Ассемблер УВМ: перевод программы на языке JSON в машинный код."""
 
 import argparse
 import sys
+from pathlib import Path
 
+from .encoder import encode_instruction, encode_program, format_bytes
 from .errors import AssemblerError
 from .parser import load_program
 
 EXIT_OK = 0
 EXIT_ASSEMBLER_ERROR = 1
+EXIT_OUTPUT_ERROR = 2
 
 
 def parse_args(argv=None):
@@ -26,22 +29,36 @@ def parse_args(argv=None):
         "-t",
         "--test",
         action="store_true",
-        help="режим тестирования: вывести промежуточное представление",
+        help="режим тестирования: вывести машинный код каждой команды",
     )
     return parser.parse_args(argv)
 
 
-def print_program(program):
-    """Вывести промежуточное представление в формате полей и значений.
+def print_bytes(program):
+    """Вывести машинный код каждой команды в байтовом формате.
 
     :param program: список команд Instruction.
     """
     for instruction in program:
-        print(instruction)
+        print(format_bytes(encode_instruction(instruction)))
+
+
+def write_binary(path, code):
+    """Записать машинный код в двоичный файл.
+
+    Каталог для файла создаётся, если его нет.
+
+    :param path: путь к двоичному файлу-результату.
+    :param code: байты программы.
+    :raises OSError: если файл не удалось записать.
+    """
+    target = Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(code)
 
 
 def main(argv=None):
-    """Перевести программу в промежуточное представление.
+    """Ассемблировать программу и записать машинный код в файл.
 
     :param argv: список аргументов командной строки.
     :returns: код завершения программы.
@@ -52,9 +69,15 @@ def main(argv=None):
     except AssemblerError as error:
         print(f"ошибка ассемблера: {error}", file=sys.stderr)
         return EXIT_ASSEMBLER_ERROR
+    code = encode_program(program)
+    try:
+        write_binary(args.output, code)
+    except OSError as error:
+        print(f"ошибка записи {args.output}: {error}", file=sys.stderr)
+        return EXIT_OUTPUT_ERROR
     if args.test:
-        print_program(program)
-    print(f"разобрано команд: {len(program)}")
+        print_bytes(program)
+    print(f"ассемблировано команд: {len(program)} ({len(code)} байт)")
     return EXIT_OK
 
 
