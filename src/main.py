@@ -1,15 +1,19 @@
 """Точка входа: выбор программы по первому аргументу.
 
-    python -m src.main asm программа.json программа.bin [--test]
+Запуск ассемблера: python -m src.main asm программа.json программа.bin
+Запуск интерпретатора: python -m src.main vm программа.bin дамп.csv 0:9
 """
 
 import sys
 
-from . import assembler
+from . import assembler, interpreter
 
-TOOLS = {"asm": assembler.main}
+TOOLS = {"asm": assembler.main, "vm": interpreter.main}
 EXIT_USAGE = 1
-USAGE = "использование: run.sh asm аргументы... (подробнее: run.sh asm -h)"
+USAGE = (
+    "использование: run.sh asm|vm аргументы... "
+    "(подробнее: run.sh asm -h, run.sh vm -h)"
+)
 
 
 def main(argv=None):

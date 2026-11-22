@@ -7,3 +7,7 @@ class UvmError(Exception):
 
 class AssemblerError(UvmError):
     """Ошибка в тексте программы на языке ассемблера."""
+
+
+class InterpreterError(UvmError):
+    """Ошибка загрузки или выполнения программы интерпретатором."""

@@ -1,0 +1,4 @@
+[
+  {"op": "load_const", "constant": 131070, "comment": "acc = 131070"},
+  {"op": "read", "offset": 10, "comment": "адрес 131080 вне памяти"}
+]
