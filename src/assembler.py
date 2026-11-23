@@ -34,7 +34,10 @@ def parse_args(argv=None):
     parser.add_argument(
         "--ir",
         action="store_true",
-        help="вывести промежуточное представление (поля и значения, этап 1)",
+        help=(
+            "режим этапа 1: только перевести программу в промежуточное "
+            "представление и вывести поля и значения, без машинного кода"
+        ),
     )
     return parser.parse_args(argv)
 
@@ -83,14 +86,16 @@ def main(argv=None):
     except AssemblerError as error:
         print(f"ошибка ассемблера: {error}", file=sys.stderr)
         return EXIT_ASSEMBLER_ERROR
+    if args.ir:
+        print_program(program)
+        print(f"разобрано команд: {len(program)}")
+        return EXIT_OK
     code = encode_program(program)
     try:
         write_binary(args.output, code)
     except OSError as error:
         print(f"ошибка записи {args.output}: {error}", file=sys.stderr)
         return EXIT_OUTPUT_ERROR
-    if args.ir:
-        print_program(program)
     if args.test:
         print_bytes(program)
     print(f"ассемблировано команд: {len(program)} ({len(code)} байт)")

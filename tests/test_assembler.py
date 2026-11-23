@@ -52,10 +52,13 @@ class AssemblerCliTest(unittest.TestCase):
         self.assertEqual(out.splitlines()[:len(SPEC_LINES)], SPEC_LINES)
 
     def test_ir_mode_prints_fields(self):
-        """Ключ --ir выводит поля и значения, как в спецификации."""
+        """Ключ --ir выводит только поля и значения, без машинного кода."""
         code, out, _ = run(["asm", SPEC, str(self.output), "--ir"])
         self.assertEqual(code, EXIT_OK)
-        self.assertEqual(out.splitlines()[:len(SPEC_FIELDS)], SPEC_FIELDS)
+        self.assertEqual(
+            out.splitlines(), SPEC_FIELDS + ["разобрано команд: 4"]
+        )
+        self.assertFalse(self.output.exists())
 
     def test_binary_file(self):
         """Двоичный файл содержит все тестовые последовательности."""

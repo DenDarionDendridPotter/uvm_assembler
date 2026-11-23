@@ -13,5 +13,5 @@ echo "=== программа programs/spec_tests.json, промежуточно�
 for file in programs/errors/*.json; do
     echo
     echo "=== $file"
-    ./run.sh asm "$file" out/error.bin
+    ./run.sh asm "$file" out/error.bin --ir
 done

@@ -14,5 +14,5 @@ call .\run.bat asm programs\spec_tests.json out\spec_tests.bin --ir
 for %%F in (programs\errors\*.json) do (
     echo.
     echo === %%F
-    call .\run.bat asm %%F out\error.bin
+    call .\run.bat asm %%F out\error.bin --ir
 )
