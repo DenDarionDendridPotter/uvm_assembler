@@ -17,6 +17,7 @@ SPEC_LINES = [
     "0x3C, 0x57, 0x00",
     "0x03",
 ]
+SPEC_FIELDS = ["A=30, B=847", "A=29, B=846", "A=28, B=697", "A=3"]
 SPEC_CODE = bytes.fromhex("FE690000DD69003C570003")
 
 
@@ -49,6 +50,12 @@ class AssemblerCliTest(unittest.TestCase):
         code, out, _ = run(["asm", SPEC, str(self.output), "--test"])
         self.assertEqual(code, EXIT_OK)
         self.assertEqual(out.splitlines()[:len(SPEC_LINES)], SPEC_LINES)
+
+    def test_ir_mode_prints_fields(self):
+        """Ключ --ir выводит поля и значения, как в спецификации."""
+        code, out, _ = run(["asm", SPEC, str(self.output), "--ir"])
+        self.assertEqual(code, EXIT_OK)
+        self.assertEqual(out.splitlines()[:len(SPEC_FIELDS)], SPEC_FIELDS)
 
     def test_binary_file(self):
         """Двоичный файл содержит все тестовые последовательности."""

@@ -17,7 +17,7 @@ def parse_args(argv=None):
     """Разобрать аргументы командной строки ассемблера.
 
     :param argv: список аргументов, по умолчанию sys.argv[1:].
-    :returns: пространство имён с полями source, output и test.
+    :returns: пространство имён с полями source, output, test и ir.
     """
     parser = argparse.ArgumentParser(
         prog="asm",
@@ -31,7 +31,21 @@ def parse_args(argv=None):
         action="store_true",
         help="режим тестирования: вывести машинный код каждой команды",
     )
+    parser.add_argument(
+        "--ir",
+        action="store_true",
+        help="вывести промежуточное представление (поля и значения, этап 1)",
+    )
     return parser.parse_args(argv)
+
+
+def print_program(program):
+    """Вывести промежуточное представление в формате полей и значений.
+
+    :param program: список команд Instruction.
+    """
+    for instruction in program:
+        print(instruction)
 
 
 def print_bytes(program):
@@ -75,6 +89,8 @@ def main(argv=None):
     except OSError as error:
         print(f"ошибка записи {args.output}: {error}", file=sys.stderr)
         return EXIT_OUTPUT_ERROR
+    if args.ir:
+        print_program(program)
     if args.test:
         print_bytes(program)
     print(f"ассемблировано команд: {len(program)} ({len(code)} байт)")
